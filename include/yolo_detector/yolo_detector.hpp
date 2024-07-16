@@ -3,14 +3,14 @@
 // C++ header
 #include <queue>
 #include <mutex>
-#include <memory>
+//#include <memory>
 #include <vector>
 #include <string>
 #include <filesystem>
 
 // openCV header
 //#include <opencv2/opencv.hpp>
-#include <opencv2/core.hpp>
+//#include <opencv2/core.hpp>
 #include <opencv2/dnn.hpp>
 
 // ROS header
@@ -23,12 +23,12 @@ namespace yolo_detector
 
 namespace fs = std::filesystem;
 
-struct Detection
-{
-  int class_id;
-  float confidence;
-  cv::Rect box;
-};
+//  struct Detection
+//  {
+//    int class_id;
+//    float confidence;
+//    cv::Rect box;
+//  };
 
 class YoloDetector : public rclcpp::Node
 {
@@ -48,12 +48,14 @@ private:
 
   std::mutex mtx_;
 
-  bool load_classes(fs::path class_file);
-  void load_net(fs::path model_file);
-  cv::Mat format_yolov5(const cv::Mat & source);
-  void detect(cv::Mat & image, std::vector<Detection> & output);
+  bool get_classes(fs::path class_file);
+  std::vector<std::string> classes_;
 
-  std::vector<std::string> class_list_;
+  void load_net(fs::path model_file);
+
+//  cv::Mat format_yolov5(const cv::Mat & source);
+//  void detect(cv::Mat & image, std::vector<Detection> & output);
+
   cv::dnn::Net net_;
 };
 
