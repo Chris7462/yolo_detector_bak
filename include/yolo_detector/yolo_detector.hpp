@@ -18,7 +18,7 @@
 #include <sensor_msgs/msg/image.hpp>
 
 
-namespace yolo_object_detection
+namespace yolo_detector
 {
 
 namespace fs = std::filesystem;
@@ -30,11 +30,11 @@ struct Detection
   cv::Rect box;
 };
 
-class YoloObjectDetection : public rclcpp::Node
+class YoloDetector : public rclcpp::Node
 {
 public:
-  YoloObjectDetection();
-  ~YoloObjectDetection() = default;
+  YoloDetector();
+  ~YoloDetector() = default;
 
 private:
   void img_callback(const sensor_msgs::msg::Image::SharedPtr msg);
@@ -57,4 +57,4 @@ private:
   cv::dnn::Net net_;
 };
 
-} // namespace yolo_object_detection
+} // namespace yolo_detector

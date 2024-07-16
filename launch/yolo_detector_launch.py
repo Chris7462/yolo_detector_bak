@@ -8,18 +8,18 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     params = join(
-        get_package_share_directory('yolo_object_detection'), 'params',
-        'yolo_object_detection.yaml'
+        get_package_share_directory('yolo_detector'), 'params',
+        'yolo_detector.yaml'
     )
 
-    yolo_object_detection_node = Node(
-        package='yolo_object_detection',
-        executable='yolo_object_detection_node',
-        name='yolo_object_detection_node',
+    yolo_detector_node = Node(
+        package='yolo_detector',
+        executable='yolo_detector_node',
+        name='yolo_detector_node',
         output='screen',
         parameters=[params]
     )
 
     return LaunchDescription([
-        yolo_object_detection_node
+        yolo_detector_node
     ])

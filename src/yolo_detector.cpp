@@ -8,17 +8,17 @@
 #include <cv_bridge/cv_bridge.h>
 
 // local header
-#include "yolo_object_detection/yolo_const.hpp"
-#include "yolo_object_detection/yolo_object_detection.hpp"
+#include "yolo_detector/yolo_const.hpp"
+#include "yolo_detector/yolo_detector.hpp"
 
 
-namespace yolo_object_detection
+namespace yolo_detector
 {
 
 using namespace std::chrono_literals;
 
-YoloObjectDetection::YoloObjectDetection()
-: Node("yolo_object_detection_node")
+YoloDetector::YoloDetector()
+: Node("yolo_detector_node")
 {
   fs::path model_path = declare_parameter("model_path", fs::path());
   fs::path model_file = model_path / declare_parameter("model", std::string());
@@ -34,22 +34,22 @@ YoloObjectDetection::YoloObjectDetection()
   rclcpp::QoS qos(10);
   img_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
     "kitti/camera/color/left/image_raw", qos, std::bind(
-      &YoloObjectDetection::img_callback, this, std::placeholders::_1));
+      &YoloDetector::img_callback, this, std::placeholders::_1));
 
   yolo_pub_ = this->create_publisher<sensor_msgs::msg::Image>(
-    "yolo_object_detection", qos);
+    "yolo_detector", qos);
 
   timer_ = this->create_wall_timer(
-    25ms, std::bind(&YoloObjectDetection::timer_callback, this));
+    25ms, std::bind(&YoloDetector::timer_callback, this));
 }
 
-void YoloObjectDetection::img_callback(const sensor_msgs::msg::Image::SharedPtr msg)
+void YoloDetector::img_callback(const sensor_msgs::msg::Image::SharedPtr msg)
 {
   std::lock_guard<std::mutex> lock(mtx_);
   img_buff_.push(msg);
 }
 
-void YoloObjectDetection::timer_callback()
+void YoloDetector::timer_callback()
 {
   if (!img_buff_.empty()) {
     rclcpp::Time current_time = rclcpp::Node::now();
@@ -96,7 +96,7 @@ void YoloObjectDetection::timer_callback()
   }
 }
 
-bool YoloObjectDetection::load_classes(fs::path class_file)
+bool YoloDetector::load_classes(fs::path class_file)
 {
   std::ifstream input_file(class_file);
   if (!input_file.is_open()) {
@@ -111,7 +111,7 @@ bool YoloObjectDetection::load_classes(fs::path class_file)
   }
 }
 
-void YoloObjectDetection::load_net(fs::path model_file)
+void YoloDetector::load_net(fs::path model_file)
 {
   net_ = cv::dnn::readNet(model_file);
   if (cv::cuda::getCudaEnabledDeviceCount() > 0) {
@@ -125,7 +125,7 @@ void YoloObjectDetection::load_net(fs::path model_file)
   }
 }
 
-cv::Mat YoloObjectDetection::format_yolov5(const cv::Mat & source)
+cv::Mat YoloDetector::format_yolov5(const cv::Mat & source)
 {
   int col = source.cols;
   int row = source.rows;
@@ -136,7 +136,7 @@ cv::Mat YoloObjectDetection::format_yolov5(const cv::Mat & source)
   return result;
 }
 
-void YoloObjectDetection::detect(cv::Mat & image, std::vector<Detection> & output)
+void YoloDetector::detect(cv::Mat & image, std::vector<Detection> & output)
 {
   auto input_image = format_yolov5(image);
 
@@ -195,4 +195,4 @@ void YoloObjectDetection::detect(cv::Mat & image, std::vector<Detection> & outpu
   }
 }
 
-} // namespace yolo_object_detection
+} // namespace yolo_detector

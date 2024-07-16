@@ -59,7 +59,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /yolo_object_detection
+        Value: /yolo_detector
       Value: true
   Enabled: true
   Global Options:

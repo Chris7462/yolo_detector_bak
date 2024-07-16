@@ -16,11 +16,11 @@ def generate_launch_description():
              '/data/kitti/raw/2011_09_29_drive_0071_sync_bag', '--clock']
     )
 
-    yolo_object_detection_launch = IncludeLaunchDescription(
+    yolo_detector_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
-                FindPackageShare('yolo_object_detection'), 'launch',
-                'yolo_object_detection_launch.py'
+                FindPackageShare('yolo_detector'), 'launch',
+                'yolo_detector_launch.py'
             ])
         ])
     )
@@ -29,8 +29,8 @@ def generate_launch_description():
         package='rviz2',
         executable='rviz2',
         name='rviz2',
-        arguments=['-d', join(get_package_share_directory('yolo_object_detection'),
-                              'rviz', 'yolo_object_detection.rviz')]
+        arguments=['-d', join(get_package_share_directory('yolo_detector'),
+                              'rviz', 'yolo_detector.rviz')]
     )
 
     return LaunchDescription([
@@ -40,7 +40,7 @@ def generate_launch_description():
         TimerAction(
             period=1.0,  # delay these nodes for 1.0 seconds.
             actions=[
-                yolo_object_detection_launch
+                yolo_detector_launch
             ]
         )
     ])
